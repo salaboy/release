@@ -158,8 +158,11 @@ otherwise, you're ready to proceed.
 You can execute the releasability check locally using
 [**buoy**](https://github.com/knative/test-infra/tree/main/buoy):
 
+If the Release number is different from the artifacts (release-1.0 and artifacts to be released are 0.27), you can set `RELEASE` and `RELEASE_MODULE` and the use the `--module-release` flag in `buoy` 
+
 ```bash
-RELEASE=0.20
+RELEASE=1.0
+RELEASE_MODULE=0.27
 REPO=git@github.com:knative/example.git
 
 tmpdir=$(dirname $(mktemp -u))
@@ -167,9 +170,9 @@ cd ${tmpdir}
 git clone ${REPO}
 cd "$(basename "${REPO}" .git)"
 
-if buoy check go.mod --domain knative.dev --release ${RELEASE} --verbose; then
+if buoy check go.mod --domain knative.dev --release ${RELEASE} --module-release ${RELEASE_MODULE} --verbose; then
   git checkout -b release-${RELEASE}
-  ./hack/update-deps.sh --upgrade --release ${RELEASE}
+  ./hack/update-deps.sh --upgrade --release ${RELEASE_MODULE}
   git status
 fi
 ```
